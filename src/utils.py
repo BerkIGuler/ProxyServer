@@ -1,3 +1,9 @@
+import logging
+import os
+from logger import init_logger
+
+logger = init_logger(__name__, log_level=logging.INFO)
+
 
 def parse_http(data: str):
     assert len(data) != 0, "data must be longer than 0 byte"
@@ -9,7 +15,8 @@ def parse_http(data: str):
 
 def get_content_from_response(http_message):
     splitted_msg = http_message.split("\r\n\r\n")
-    return splitted_msg[-1]
+    content = splitted_msg[-1]
+    return content.strip()
 
 
 def get_status(http_message):
@@ -37,3 +44,11 @@ def build_download_request(url, host):
             + f"Host: {host}\r\n"\
             + "Accept: text/html\r\n\r\n"
     return bytes(request, "ascii")
+
+
+def write_content_to_disk(http_message, fname):
+    content = get_content_from_response(http_message)
+    if fname in os.listdir(os.getcwd()):
+        logger.info(f"File {fname} already exists... Overwriting")
+    with open(fname, "w", encoding="utf-8") as fout:
+        fout.write(content)

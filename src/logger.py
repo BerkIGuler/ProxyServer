@@ -6,7 +6,7 @@ logging.root.setLevel(logging.NOTSET)
 def init_logger(
         logger_name,
         log_level="INFO",
-        log_path="../logs/server_logs.log"):
+        log_path="server_logs.log"):
 
     logger = logging.getLogger(logger_name)
     logger.setLevel(log_level)
