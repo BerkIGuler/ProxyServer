@@ -28,8 +28,10 @@ if __name__ == "__main__":
 
     args = parse_args()
     logger = init_logger(__name__, log_level="INFO")
+    LOCAL_HOST = "127.0.0.1"
+    WEB_SERVER_PORT = 80
 
-    proxy_server = ProxyServer(host_ip="127.0.0.1", port=args.port)
+    proxy_server = ProxyServer(host_ip=LOCAL_HOST, port=args.port)
     proxy_server.bind()
     proxy_server.listen()
 
@@ -40,14 +42,14 @@ if __name__ == "__main__":
         url, fname, host = parse_http(msg)
 
         # filter out firefox related queries
-        if "firefox" in host:
+        if "bilkent" not in host:
             continue
 
         print("Retrieved request from Firefox:\n")
         print(msg, end="\n\n")
 
         print(f"Downloading file '{fname}'...")
-        client = WebClient(hostname=host, port=80)
+        client = WebClient(hostname=host, port=WEB_SERVER_PORT)
         down_content = client.download_file(url)
 
         status = get_status(down_content)
